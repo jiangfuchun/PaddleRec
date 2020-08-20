@@ -1,0 +1,38 @@
+workspace: "models/match/simnet_bow"
+
+dataset:
+- name: dataset_train
+  batch_size: 4
+  type: QueueDataset
+  data_path: "{workspace}/data"
+  data_converter: "{workspace}/reader.py"
+
+hyper_parameters:
+  optimizer:
+    class: adam
+    learning_rate: 0.01
+    strategy: async
+  dict_dim: 4000000
+  emb_dim: 128
+  learning_rate: 0.1
+  hid_dim: 128
+  margin: 0.1
+  sampling_rate: 0.02  
+
+mode: train_runner
+
+runner:
+- name: train_runner
+  class: train
+  epochs: 4
+  device: cpu
+  save_checkpoint_interval: 2
+  save_checkpoint_path: "model_output"
+  init_model_path: "" # load model path
+  print_interval: 100
+   
+phase:
+- name: phase1
+  model: "{workspace}/model.py" 
+  dataset_name: dataset_train
+  thread_num: 1
